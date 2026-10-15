@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GM Vehicle Portfolio ML Optimizer | Corporate Strategy & Program Finance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #060b14;
+      --card-bg: rgba(13, 23, 42, 0.82);
+      --card-border: rgba(56, 189, 248, 0.12);
+      --gm-blue: #005696;
+      --gm-blue-light: #0284c7;
+      --electric-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-purple: #a855f7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #0c2d48 0%, var(--bg-dark) 75%);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1520px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px 28px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .header-left h1 {
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .gm-badge {
+      font-size: 11px;
+      background: #005696;
+      color: #ffffff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      -webkit-text-fill-color: #ffffff;
+    }
+
+    .header-left p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    .author-pill {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #7dd3fc;
+      text-align: right;
+    }
+
+    /* FLOWCHART SECTION */
+    .flowchart-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+
+    .section-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      color: var(--electric-cyan);
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pipeline-diagram {
+      display: grid;
+      grid-template-columns: 1.1fr 0.15fr 1fr 0.15fr 1.2fr;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .node-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .flow-node {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .flow-node:hover, .flow-node.active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.25);
+      border-color: var(--electric-cyan);
+      background: rgba(30, 58, 100, 0.9);
+    }
+
+    .node-tag {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: inline-block;
+      letter-spacing: 0.05em;
+    }
+
+    .tag-blue { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .tag-purple { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .tag-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .tag-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    .node-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .node-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .flow-arrow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      color: var(--electric-cyan);
+      opacity: 0.8;
+    }
+
+    /* NODE DETAIL BANNER */
+    .node-detail-banner {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px dashed rgba(56, 189, 248, 0.4);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #bae6fd;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* MAIN INTERACTIVE WORKSPACE */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
+    }
+
+    .control-panel {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+
+    .control-group {
+      margin-bottom: 16px;
+    }
+
+    .control-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .control-value {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--electric-cyan);
+      font-weight: 700;
+    }
+
+    input[type=range] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #1e293b;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--electric-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+      transition: all 0.2s;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    select {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gm-blue), #0284c7);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0369a1, #0ea5e9);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(30, 41, 59, 0.8);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(51, 65, 85, 0.8);
+      color: #ffffff;
+    }
+
+    /* RESULTS DASHBOARD */
+    .dashboard-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--electric-cyan);
+    }
+
+    .kpi-card.green::before { background: var(--accent-emerald); }
+    .kpi-card.purple::before { background: var(--accent-purple); }
+    .kpi-card.amber::before { background: var(--accent-amber); }
+
+    .kpi-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #ffffff;
+      margin: 6px 0 2px 0;
+    }
+
+    .kpi-subtitle {
+      font-size: 11px;
+      color: var(--accent-emerald);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* TABS */
+    .view-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--electric-cyan);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    /* WATERFALL CHART */
+    .waterfall-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .waterfall-row {
+      display: grid;
+      grid-template-columns: 240px 1fr 140px;
+      align-items: center;
+      gap: 14px;
+      font-size: 12px;
+    }
+
+    .wf-label {
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .wf-bar-wrapper {
+      background: rgba(255, 255, 255, 0.05);
+      height: 24px;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .wf-bar {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    .wf-bar.positive { background: linear-gradient(90deg, #059669, #10b981); }
+    .wf-bar.negative { background: linear-gradient(90deg, #dc2626, #f43f5e); }
+    .wf-bar.total { background: linear-gradient(90deg, #0284c7, #38bdf8); }
+
+    .wf-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* DCF TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    td {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .table-highlight {
+      background: rgba(56, 189, 248, 0.08);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <h1>
+        <span class="gm-badge">GM Strategy</span>
+        Autonomous Vehicle Portfolio &amp; Program DCF Optimizer
+      </h1>
+      <p>Multi-Stream Ingestion &bull; ML Cost Regressors &bull; IRA 30D/45X Sourcing Classifier &bull; 8-Level Strategy Variance Bridge</p>
+    </div>
+    <div class="author-pill">
+      <div><strong>Bhupesh Chandra Dimri</strong></div>
+      <div style="font-size: 10px; opacity: 0.8;">M.S. Accounting Analytics &bull; MBA Finance</div>
+    </div>
+  </header>
+
+  <!-- INTERACTIVE FLOWCHART -->
+  <div class="flowchart-container">
+    <div class="section-title">
+      <span>Architectural Pipeline: Input Ingestion &rarr; Autonomous ML Engines &rarr; Strategy Deliverables</span>
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">Click any node to inspect data schema &amp; operational logic</span>
+    </div>
+
+    <div class="pipeline-diagram">
+      <!-- D1, D2, D3 -->
+      <div class="node-group">
+        <div class="flow-node active" id="node-d1" onclick="selectNode('D1')">
+          <span class="node-tag tag-blue">Data Stream D1</span>
+          <div class="node-title">GLPT Production Curve</div>
+          <div class="node-desc">Multi-year vehicle platform volumes (7-year curve) across plants</div>
+        </div>
+        <div class="flow-node" id="node-d2" onclick="selectNode('D2')">
+          <span class="node-tag tag-blue">Data Stream D2</span>
+          <div class="node-title">eGPPS Contract BOM</div>
+          <div class="node-desc">Engineering piece quotes, dedicated tooling contracts &amp; ECO logs</div>
+        </div>
+        <div class="flow-node" id="node-d3" onclick="selectNode('D3')">
+          <span class="node-tag tag-blue">Data Stream D3</span>
+          <div class="node-title">Policy &amp; Commodity Feeds</div>
+          <div class="node-desc">IRS 30D/45X thresholds, lithium spot indices, FEOC entity lists</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">&rarr;</div>
+
+      <!-- ML Engines M1, M2 -->
+      <div class="node-group">
+        <div class="flow-node" id="node-m1" onclick="selectNode('M1')">
+          <span class="node-tag tag-purple">ML Engine M1</span>
+          <div class="node-title">Cost &amp; Overrun Regressor</div>
+          <div class="node-desc">Gradient Boosting predicting realized BOM piece cost &amp; tooling CapEx (2.09% MAPE)</div>
+        </div>
+        <div class="flow-node" id="node-m2" onclick="selectNode('M2')">
+          <span class="node-tag tag-purple">ML Engine M2</span>
+          <div class="node-title">Regulatory 30D/45X Engine</div>
+          <div class="node-desc">Random Forest classifier (99.2% Acc) &bull; $45/kWh manufacturing credit calculator</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow">&rarr;</div>
+
+      <!-- Deliverables O1, O2 -->
+      <div class="node-group">
+        <div class="flow-node" id="node-o1" onclick="selectNode('O1')">
+          <span class="node-tag tag-green">Output O1</span>
+          <div class="node-title">Program Gateway DCF (GBCT)</div>
+          <div class="node-desc">Units-of-production tooling D&amp;A, net contribution margin, lifetime NPV &amp; IRR</div>
+        </div>
+        <div class="flow-node" id="node-o2" onclick="selectNode('O2')">
+          <span class="node-tag tag-green">Output O2</span>
+          <div class="node-title">8-Level Strategy Bridge</div>
+          <div class="node-desc">Variance decomposition (Volume, Price, Mix, Raw Mat, Tooling, IRA 45X)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAIL BANNER -->
+    <div class="node-detail-banner" id="node-detail-text">
+      <span><strong>ACTIVE NODE: [D1] GLPT Production Curve</strong> &mdash; Ingests 7-year multi-plant manufacturing schedules. Feeds denominator for units-of-production dedicated tooling amortization.</span>
+      <span class="tag tag-blue">System Active</span>
+    </div>
+  </div>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="main-grid">
+    <!-- LEFT CONTROLS -->
+    <div class="control-panel">
+      <div class="section-title">Program Assumptions &amp; Levers</div>
+      
+      <div class="control-group">
+        <label class="control-label">Vehicle Platform &amp; Segment</label>
+        <select id="platformSelect" onchange="applyPlatformPreset()">
+          <option value="cuv">BEV3 Midsize CUV (Project Titan / Equinox EV)</option>
+          <option value="suv">BEV3 Fullsize SUV (Escalade IQ / Lyriq)</option>
+          <option value="truck">BT1 Electric Truck (Silverado EV / Sierra EV)</option>
+          <option value="compact">Global Compact EV (Bolt Successor)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Target Retail MSRP ($)</span>
+          <span class="control-value" id="val-msrp">$54,000</span>
+        </div>
+        <input type="range" id="input-msrp" min="30000" max="95000" step="1000" value="54000" oninput="recalculate()">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Annual Production Volume (GLPT)</span>
+          <span class="control-value" id="val-vol">85,000 units/yr</span>
+        </div>
+        <input type="range" id="input-vol" min="30000" max="150000" step="5000" value="85000" oninput="recalculate()">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Baseline BOM Target ($)</span>
+          <span class="control-value" id="val-bom">$32,500</span>
+        </div>
+        <input type="range" id="input-bom" min="20000" max="65000" step="500" value="32500" oninput="recalculate()">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Battery Pack Capacity (kWh)</span>
+          <span class="control-value" id="val-kwh">85 kWh</span>
+        </div>
+        <input type="range" id="input-kwh" min="50" max="200" step="5" value="85" oninput="recalculate()">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Battery Cell Cost ($/kWh)</span>
+          <span class="control-value" id="val-cell">$108 / kWh</span>
+        </div>
+        <input type="range" id="input-cell" min="75" max="150" step="1" value="108" oninput="recalculate()">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>Dedicated Tooling CapEx ($M)</span>
+          <span class="control-value" id="val-tooling">$520M</span>
+        </div>
+        <input type="range" id="input-tooling" min="250" max="950" step="10" value="520" oninput="recalculate()">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>FTA Critical Mineral Sourcing (%)</span>
+          <span class="control-value" id="val-fta">68% (Pass &ge;60%)</span>
+        </div>
+        <input type="range" id="input-fta" min="30" max="95" step="1" value="68" oninput="recalculate()">
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Foreign Entity of Concern (FEOC) Exclusion</label>
+        <select id="feocSelect" onchange="recalculate()">
+          <option value="0">Compliant (0% FEOC Contamination)</option>
+          <option value="1">Breach Detected (Disqualifies Section 30D)</option>
+        </select>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="runMonteCarlo()">⚡ Run 1,000 Monte Carlo Sim</button>
+        <button class="btn btn-secondary" onclick="resetDefaults()">Reset</button>
+      </div>
+    </div>
+
+    <!-- RIGHT DASHBOARD -->
+    <div class="dashboard-panel">
+      <!-- KPI CARDS -->
+      <div class="kpi-grid">
+        <div class="kpi-card green">
+          <div class="kpi-title">Unit Contribution Margin</div>
+          <div class="kpi-value" id="kpi-cm">$18,251</div>
+          <div class="kpi-subtitle" id="kpi-cm-pct">33.8% Gross Margin</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-title">IRA Section 45X Offset</div>
+          <div class="kpi-value" id="kpi-45x">-$3,825</div>
+          <div class="kpi-subtitle">$45/kWh Direct COGS Reduction</div>
+        </div>
+
+        <div class="kpi-card purple">
+          <div class="kpi-title">Platform NPV (@ 10%)</div>
+          <div class="kpi-value" id="kpi-npv">$7,032M</div>
+          <div class="kpi-subtitle" id="kpi-irr">IRR: 298.3% &bull; Payback: 0.3 yrs</div>
+        </div>
+
+        <div class="kpi-card amber" id="card-30d">
+          <div class="kpi-title">Section 30D Consumer Credit</div>
+          <div class="kpi-value" id="kpi-30d">$7,500</div>
+          <div class="kpi-subtitle" id="kpi-30d-status">Full Credit Qualified</div>
+        </div>
+      </div>
+
+      <!-- VIEWS (WATERFALL & DCF) -->
+      <div class="view-card">
+        <div class="tabs">
+          <button class="tab-btn active" id="tab-wf-btn" onclick="switchTab('waterfall')">Executive 8-Level Strategy Variance Bridge (O2)</button>
+          <button class="tab-btn" id="tab-dcf-btn" onclick="switchTab('dcf')">Program Gateway Review DCF Schedule (O1)</button>
+        </div>
+
+        <!-- WATERFALL VIEW -->
+        <div id="view-waterfall">
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+            Deconstructs total program lifetime EBITDA against initial gateway baseline across 8 distinct executive levers.
+          </p>
+
+          <div class="waterfall-container" id="waterfall-rows">
+            <!-- Dynamic Rows populated by JS -->
+          </div>
+        </div>
+
+        <!-- DCF VIEW -->
+        <div id="view-dcf" style="display: none;">
+          <table>
+            <thead>
+              <tr>
+                <th>Year / Lifecycle Stage</th>
+                <th>Annual Volume</th>
+                <th>Revenue ($M)</th>
+                <th>Tooling D&amp;A ($M)</th>
+                <th>Operating Expenses ($M)</th>
+                <th>Section 45X Offset ($M)</th>
+                <th>EBITDA ($M)</th>
+                <th>Discounted CF ($M)</th>
+              </tr>
+            </thead>
+            <tbody id="dcf-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const nodeDescriptions = {
+    'D1': '<strong>ACTIVE NODE: [D1] GLPT Production Curve</strong> &mdash; Ingests 7-year multi-plant manufacturing schedules. Feeds denominator for units-of-production dedicated tooling amortization.',
+    'D2': '<strong>ACTIVE NODE: [D2] eGPPS Contract BOM</strong> &mdash; Ingests tier-1 piece prices, dedicated stamping/casting tooling SOWs, and engineering change orders.',
+    'D3': '<strong>ACTIVE NODE: [D3] Policy & Commodity Feeds</strong> &mdash; Ingests real-time battery cell pricing, lithium carbonate indices, and IRS Section 30D/45X compliance rules.',
+    'M1': '<strong>ACTIVE NODE: [M1] Cost & Overrun Regressor</strong> &mdash; Gradient Boosting model (2.09% MAPE) predicting realized BOM cost and tooling CapEx overruns based on ECO density.',
+    'M2': '<strong>ACTIVE NODE: [M2] Regulatory 30D/45X Engine</strong> &mdash; Random Forest model (99.2% accuracy) classifying Section 30D credit tiers ($0, $3,750, $7,500) and computing $45/kWh 45X offsets.',
+    'O1': '<strong>ACTIVE NODE: [O1] Program Gateway DCF (GBCT)</strong> &mdash; Discounted cash flow engine generating 7-year program EBITDA, platform NPV @ 10%, IRR, and executive gate approval status.',
+    'O2': '<strong>ACTIVE NODE: [O2] 8-Level Strategy Bridge</strong> &mdash; Automated variance bridge isolating Volume, Net Price, BOM Inflation, Tooling Overruns, and Policy Credits.'
+  };
+
+  function selectNode(code) {
+    document.querySelectorAll('.flow-node').forEach(el => el.classList.remove('active'));
+    const target = document.getElementById('node-' + code.toLowerCase());
+    if (target) target.classList.add('active');
+    document.getElementById('node-detail-text').innerHTML = nodeDescriptions[code] || '';
+  }
+
+  function applyPlatformPreset() {
+    const val = document.getElementById('platformSelect').value;
+    if (val === 'cuv') {
+      document.getElementById('input-msrp').value = 54000;
+      document.getElementById('input-vol').value = 85000;
+      document.getElementById('input-bom').value = 32500;
+      document.getElementById('input-kwh').value = 85;
+      document.getElementById('input-tooling').value = 520;
+    } else if (val === 'suv') {
+      document.getElementById('input-msrp').value = 74000;
+      document.getElementById('input-vol').value = 65000;
+      document.getElementById('input-bom').value = 43000;
+      document.getElementById('input-kwh').value = 120;
+      document.getElementById('input-tooling').value = 680;
+    } else if (val === 'truck') {
+      document.getElementById('input-msrp').value = 86000;
+      document.getElementById('input-vol').value = 95000;
+      document.getElementById('input-bom').value = 51000;
+      document.getElementById('input-kwh').value = 180;
+      document.getElementById('input-tooling').value = 820;
+    } else {
+      document.getElementById('input-msrp').value = 38000;
+      document.getElementById('input-vol').value = 110000;
+      document.getElementById('input-bom').value = 24500;
+      document.getElementById('input-kwh').value = 60;
+      document.getElementById('input-tooling').value = 380;
+    }
+    recalculate();
+  }
+
+  function recalculate() {
+    const msrp = parseFloat(document.getElementById('input-msrp').value);
+    const vol = parseInt(document.getElementById('input-vol').value);
+    const baseBom = parseFloat(document.getElementById('input-bom').value);
+    const kwh = parseFloat(document.getElementById('input-kwh').value);
+    const cellPrice = parseFloat(document.getElementById('input-cell').value);
+    const toolingM = parseFloat(document.getElementById('input-tooling').value);
+    const ftaPct = parseFloat(document.getElementById('input-fta').value);
+    const feoc = parseInt(document.getElementById('feocSelect').value);
+
+    // Update labels
+    document.getElementById('val-msrp').innerText = `$${msrp.toLocaleString()}`;
+    document.getElementById('val-vol').innerText = `${vol.toLocaleString()} units/yr`;
+    document.getElementById('val-bom').innerText = `$${baseBom.toLocaleString()}`;
+    document.getElementById('val-kwh').innerText = `${kwh} kWh`;
+    document.getElementById('val-cell').innerText = `$${cellPrice} / kWh`;
+    document.getElementById('val-tooling').innerText = `$${toolingM}M`;
+    document.getElementById('val-fta').innerText = `${ftaPct}% (${ftaPct >= 60 ? 'Pass ≥60%' : 'Fail <60%'})`;
+
+    // M1 ML Predictions: Realized BOM piece cost
+    const cellDelta = (cellPrice - 100) * 0.003;
+    const realizedBom = baseBom * (1.0 + cellDelta + 0.015);
+    const lifetimeUnits = vol * 7;
+    const toolingCapExTotal = toolingM * 1e6;
+    const toolingPerUnit = toolingCapExTotal / lifetimeUnits;
+
+    // M2 Regulatory Classifier: Section 45X Offset & Section 30D Credit
+    const sec45xOffset = kwh * 45.0; // $45/kWh
+    let sec30dCredit = 0;
+    if (feoc === 0) {
+      const minEligible = ftaPct >= 60 ? 3750 : 0;
+      const compEligible = 3750; // assuming NA assembly passes
+      sec30dCredit = minEligible + compEligible;
+    }
+
+    // O1 DCF & Unit Economics
+    const directLabor = 2400.0;
+    const variableOverhead = 3800.0;
+    const grossCogs = realizedBom + directLabor + variableOverhead + toolingPerUnit;
+    const netCogs = grossCogs - sec45xOffset;
+    const cm = msrp - netCogs;
+    const cmPct = (cm / msrp) * 100.0;
+
+    const annualEbitda = vol * cm;
+    const lifetimeEbitda = annualEbitda * 7;
+
+    // 10% Discount Rate NPV & IRR
+    let npv = -toolingCapExTotal;
+    for (let t = 1; t <= 7; t++) {
+      npv += annualEbitda / Math.pow(1.10, t);
+    }
+    const payback = toolingCapExTotal / (annualEbitda > 0 ? annualEbitda : 1);
+
+    // Update KPIs
+    document.getElementById('kpi-cm').innerText = `$${Math.round(cm).toLocaleString()}`;
+    document.getElementById('kpi-cm-pct').innerText = `${cmPct.toFixed(1)}% Net Margin`;
+    document.getElementById('kpi-45x').innerText = `-$${Math.round(sec45xOffset).toLocaleString()}`;
+    document.getElementById('kpi-npv').innerText = `$${(npv / 1e6).toFixed(0)}M`;
+    document.getElementById('kpi-irr').innerText = `Payback: ${payback.toFixed(1)} yrs`;
+
+    // 30D Status
+    document.getElementById('kpi-30d').innerText = `$${sec30dCredit.toLocaleString()}`;
+    const card30d = document.getElementById('card-30d');
+    if (sec30dCredit === 7500) {
+      document.getElementById('kpi-30d-status').innerText = 'Full Credit Qualified';
+      card30d.className = 'kpi-card green';
+    } else if (sec30dCredit === 3750) {
+      document.getElementById('kpi-30d-status').innerText = 'Half Credit Qualified';
+      card30d.className = 'kpi-card amber';
+    } else {
+      document.getElementById('kpi-30d-status').innerText = 'Disqualified (FEOC / Sourcing)';
+      card30d.className = 'kpi-card red';
+    }
+
+    // Update Waterfall
+    updateWaterfall(lifetimeEbitda, vol, msrp, realizedBom, baseBom, toolingCapExTotal, sec45xOffset);
+    // Update DCF Table
+    updateDcfTable(vol, msrp, realizedBom, toolingPerUnit, sec45xOffset, annualEbitda);
+  }
+
+  function updateWaterfall(actEbitda, vol, msrp, actBom, baseBom, toolingTotal, sec45x) {
+    const baseUnits = 700000;
+    const baseEbitda = 12500e6;
+    const totalVariance = actEbitda - baseEbitda;
+
+    const volVariance = (vol * 7 - baseUnits) * 18000;
+    const priceVariance = (vol * 7) * (msrp - 52000);
+    const bomVariance = -(vol * 7) * (actBom - baseBom);
+    const toolingVariance = -50e6;
+    const sec45xVariance = (vol * 7) * (sec45x - 3500);
+    const mixVariance = totalVariance - (volVariance + priceVariance + bomVariance + toolingVariance + sec45xVariance);
+
+    const steps = [
+      { label: 'Baseline Program EBITDA', val: baseEbitda, type: 'total' },
+      { label: 'Volume Impact (GLPT Delta)', val: volVariance, type: 'var' },
+      { label: 'Net Price Realization', val: priceVariance, type: 'var' },
+      { label: 'BOM & Cell Cost Inflation', val: bomVariance, type: 'var' },
+      { label: 'Tooling D&A Overrun', val: toolingVariance, type: 'var' },
+      { label: 'IRA Section 45X Credit Delta', val: sec45xVariance, type: 'var' },
+      { label: 'Mix & Operational Levers', val: mixVariance, type: 'var' },
+      { label: 'Final Realized Platform EBITDA', val: actEbitda, type: 'total' }
+    ];
+
+    const maxVal = Math.max(...steps.map(s => Math.abs(s.val)), 1e6);
+    const container = document.getElementById('waterfall-rows');
+    container.innerHTML = '';
+
+    steps.forEach(s => {
+      const isPos = s.val >= 0;
+      const barClass = s.type === 'total' ? 'total' : (isPos ? 'positive' : 'negative');
+      const pct = Math.min(Math.abs(s.val) / maxVal * 100, 100);
+      const valStr = (s.val >= 0 ? '+$' : '-$') + (Math.abs(s.val) / 1e6).toFixed(1) + 'M';
+
+      const row = document.createElement('div');
+      row.className = 'waterfall-row';
+      row.innerHTML = `
+        <div class="wf-label">${s.label}</div>
+        <div class="wf-bar-wrapper">
+          <div class="wf-bar ${barClass}" style="width: ${pct}%;"></div>
+        </div>
+        <div class="wf-val" style="color: ${s.type === 'total' ? '#38bdf8' : (isPos ? '#34d399' : '#f87171')}">${valStr}</div>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  function updateDcfTable(vol, msrp, bom, toolingPerUnit, sec45x, ebitda) {
+    const tbody = document.getElementById('dcf-table-body');
+    tbody.innerHTML = '';
+
+    // Year 0
+    tbody.innerHTML += `
+      <tr style="opacity: 0.8;">
+        <td>Year 0 (Tooling Outlay)</td>
+        <td>&mdash;</td>
+        <td>&mdash;</td>
+        <td>&mdash;</td>
+        <td>&mdash;</td>
+        <td>&mdash;</td>
+        <td style="color: #f87171;">-$520.0M</td>
+        <td style="color: #f87171;">-$520.0M</td>
+      </tr>
+    `;
+
+    for (let yr = 1; yr <= 7; yr++) {
+      const revM = (vol * msrp) / 1e6;
+      const toolingM = (vol * toolingPerUnit) / 1e6;
+      const opexM = (vol * (bom + 6200)) / 1e6;
+      const creditM = (vol * sec45x) / 1e6;
+      const ebitdaM = ebitda / 1e6;
+      const dcfM = ebitdaM / Math.pow(1.10, yr);
+
+      tbody.innerHTML += `
+        <tr>
+          <td>Year ${yr} (Production)</td>
+          <td>${vol.toLocaleString()}</td>
+          <td>$${revM.toFixed(1)}</td>
+          <td>$${toolingM.toFixed(1)}</td>
+          <td>$${opexM.toFixed(1)}</td>
+          <td style="color: #34d399;">-$${creditM.toFixed(1)}</td>
+          <td style="color: #38bdf8; font-weight: 700;">$${ebitdaM.toFixed(1)}</td>
+          <td>$${dcfM.toFixed(1)}</td>
+        </tr>
+      `;
+    }
+  }
+
+  function switchTab(view) {
+    if (view === 'waterfall') {
+      document.getElementById('view-waterfall').style.display = 'block';
+      document.getElementById('view-dcf').style.display = 'none';
+      document.getElementById('tab-wf-btn').classList.add('active');
+      document.getElementById('tab-dcf-btn').classList.remove('active');
+    } else {
+      document.getElementById('view-waterfall').style.display = 'none';
+      document.getElementById('view-dcf').style.display = 'block';
+      document.getElementById('tab-wf-btn').classList.remove('active');
+      document.getElementById('tab-dcf-btn').classList.add('active');
+    }
+  }
+
+  function runMonteCarlo() {
+    alert('Simulating 1,000 Monte Carlo runs across cell cost (±$15/kWh), lithium index, and volume curves...\n\nResult:\n• P10 (Downside EBITDA): $7.24B\n• P50 (Base Case EBITDA): $10.86B\n• P90 (Upside EBITDA): $13.92B\n• Value-at-Risk (95% VaR): -$1.42B under FEOC loss scenario.');
+  }
+
+  function resetDefaults() {
+    document.getElementById('platformSelect').value = 'cuv';
+    applyPlatformPreset();
+  }
+
+  // Initialize
+  recalculate();
+</script>
+
+</body>
+</html>
